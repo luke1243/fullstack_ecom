@@ -226,7 +226,7 @@ const validateLogin = (req, res, next) =>
 
 const validateId = (req, res, next) => 
 {
-    const id = req.params.id;
+    const id = req.params.id || req.params.itemId;
     
     if (!id) 
     {

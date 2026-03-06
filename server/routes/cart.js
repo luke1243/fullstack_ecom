@@ -272,7 +272,7 @@ router.delete('/cart/clear', (req, res, next) =>
     
     Cart.findOneAndUpdate(
         { userId: req.userId, isActive: true },
-        { items: [], subtotal: 0, tax: 0, total: 0 },
+        { items: [], subtotal: 0, total: 0 },
         { new: true }
     )
         .then(cart => 
