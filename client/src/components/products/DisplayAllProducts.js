@@ -53,6 +53,10 @@ export const DisplayAllProducts = () => {
     return (
         <div className="products-container">
             <h1>Our Products</h1>
+
+            <div className = "products-search-container">
+                <input type="text" placeholder="Search products..." className="products-searchbar" />
+            </div>
             
             {products.length === 0 ? (
                 <p className="no-products">No products available</p>
