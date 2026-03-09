@@ -12,9 +12,14 @@ export const DisplayAllProducts = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
+    const [search, setSearch] = useState('');
+    const [category, setCategory] = useState('');
+    const [sort, setSort] = useState('');
 
     useEffect(() => {
-        axios.get(`${SERVER_HOST}/products`)
+        axios.get(`${SERVER_HOST}/products`, {
+            params: { search, category, sort }
+        })
             .then(res => {
                 if (res.data) {
                     setProducts(res.data);
@@ -26,7 +31,7 @@ export const DisplayAllProducts = () => {
                 setLoading(false);
                 console.log(err);
             });
-    }, []);
+    }, [search, category, sort]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -54,8 +59,40 @@ export const DisplayAllProducts = () => {
         <div className="products-container">
             <h1>Our Products</h1>
 
-            <div className = "products-search-container">
-                <input type="text" placeholder="Search products..." className="products-searchbar" />
+            <div className="search-filter-bar">
+                <input
+                    type="text"
+                    placeholder="Search products..."
+                    className="search-input"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
+
+                <select
+                    className="filter-select"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                >
+                    <option value="">All Categories</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Books">Books</option>
+                    <option value="Home">Home</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <select
+                    className="filter-select"
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value)}
+                >
+                    <option value="">Sort By</option>
+                    <option value="price_asc">Price: Low to High</option>
+                    <option value="price_desc">Price: High to Low</option>
+                    <option value="name_asc">Name: A-Z</option>
+                    <option value="name_desc">Name: Z-A</option>
+                </select>
             </div>
             
             {products.length === 0 ? (
