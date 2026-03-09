@@ -2,32 +2,37 @@ const mongoose = require('mongoose');
 
 let usersSchema = new mongoose.Schema(
     {
-        name: { 
-            type: String, 
-            required: true 
+        name: {
+            type: String,
+            required: true
         },
 
-        email: { 
-            type: String, 
+        email: {
+            type: String,
             required: true,
             unique: true,
-            lowercase: true 
+            lowercase: true
         },
 
-        password: { 
-            type: String, 
-            required: true 
+        password: {
+            type: String,
+            required: true
         },
-        
-        accessLevel: { 
-            type: Number, 
-            default: 1  
+
+        accessLevel: {
+            type: Number,
+            default: 1
         },
-        
-        profilePhotoFilename: { 
-            type: String, 
-            default: "" 
-        }
+
+        profilePhotoFilename: {
+            type: String,
+            default: "pfp.png"
+        },
+
+        purchases: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product'
+        }]
     },
     {
         collection: 'users'

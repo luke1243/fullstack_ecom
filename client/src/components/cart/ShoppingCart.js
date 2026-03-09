@@ -5,8 +5,7 @@ import { CartItem } from './CartItem';
 import { CartSummary } from './CartSummary';
 import { SERVER_HOST, ACCESS_LEVEL_GUEST } from '../../config/global_constants';
 
-export const ShoppingCart = () => 
-{
+export const ShoppingCart = () => {
     const [cart, setCart] = useState({
         items: [],
         subtotal: 0,
@@ -16,112 +15,94 @@ export const ShoppingCart = () =>
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [updating, setUpdating] = useState(false);
+    const [purchasing, setPurchasing] = useState(false);
+    const [purchaseMessage, setPurchaseMessage] = useState('');
 
-    useEffect(() => 
-    {
+    useEffect(() => {
         fetchCart();
     }, []);
 
-    const fetchCart = () => 
-    {
+    const fetchCart = () => {
         setLoading(true);
 
         const config = {};
 
-        if (localStorage.token && localStorage.token !== 'null') 
-        {
+        if (localStorage.token && localStorage.token !== 'null') {
             config.headers = { Authorization: localStorage.token };
         }
-        
+
         axios.get(`${SERVER_HOST}/cart`, config)
-            .then(res => 
-            {
-                if (res.data) 
-                {
+            .then(res => {
+                if (res.data) {
                     setCart(res.data);
                 }
                 setLoading(false);
             })
-            .catch(err => 
-            {
+            .catch(err => {
                 setError('Error loading cart');
                 setLoading(false);
                 console.log(err);
             });
     };
 
-    const updateQuantity = (itemId, newQuantity) => 
-    {
+    const updateQuantity = (itemId, newQuantity) => {
         setUpdating(true);
-        
+
         const config = {};
-        if (localStorage.token && localStorage.token !== 'null') 
-        {
+        if (localStorage.token && localStorage.token !== 'null') {
             config.headers = { Authorization: localStorage.token };
         }
-        
-        return axios.put(`${SERVER_HOST}/cart/update/${itemId}`, 
+
+        return axios.put(`${SERVER_HOST}/cart/update/${itemId}`,
             { quantity: newQuantity },
             config
         )
-        .then(res => 
-        {
-            if (res.data) 
-            {
-                setCart(res.data);
-            }
-            setUpdating(false);
-            setError('');
-        })
-        .catch(err => 
-        {
-            setError('Error updating cart');
-            setUpdating(false);
-            console.log(err);
-            throw err;
-        });
+            .then(res => {
+                if (res.data) {
+                    setCart(res.data);
+                }
+                setUpdating(false);
+                setError('');
+            })
+            .catch(err => {
+                setError('Error updating cart');
+                setUpdating(false);
+                console.log(err);
+                throw err;
+            });
     };
 
-    const removeItem = (itemId) => 
-    {
+    const removeItem = (itemId) => {
         const config = {};
 
-        if (localStorage.token && localStorage.token !== 'null') 
-        {
+        if (localStorage.token && localStorage.token !== 'null') {
             config.headers = { Authorization: localStorage.token };
         }
-        
+
         axios.delete(`${SERVER_HOST}/cart/remove/${itemId}`, config)
-            .then(res => 
-            {
-                if (res.data) 
-                {
+            .then(res => {
+                if (res.data) {
                     setCart(res.data);
                 }
                 setError('');
             })
-            .catch(err => 
-            {
+            .catch(err => {
                 setError('Error removing item');
                 console.log(err);
             });
     };
 
-    const clearCart = () => 
-    {
+    const clearCart = () => {
         if (!window.confirm('Clear your entire cart?')) return;
-        
+
         const config = {};
-        if (localStorage.token && localStorage.token !== 'null') 
-        {
+        if (localStorage.token && localStorage.token !== 'null') {
             config.headers = { Authorization: localStorage.token };
         }
-        
+
         axios.delete(`${SERVER_HOST}/cart/clear`, config)
-            .then(res => 
-            {
-                if (res.data) 
-                {
+            .then(res => {
+                if (res.data) {
                     setCart({
                         items: [],
                         subtotal: 0,
@@ -131,9 +112,38 @@ export const ShoppingCart = () =>
                 }
                 setError('');
             })
-            .catch(err => 
-            {
+            .catch(err => {
                 setError('Error clearing cart');
+                console.log(err);
+            });
+    };
+
+    const handlePurchase = () => {
+        if (!localStorage.token || localStorage.token === 'null') {
+            setError('Please log in to make a purchase');
+            return;
+        }
+
+        setPurchasing(true);
+        setError('');
+        setPurchaseMessage('');
+
+        const productIds = cart.items.flatMap(item => Array(item.quantity).fill(item.productId));
+
+        axios.post(`${SERVER_HOST}/users/purchase`,
+            { productIds },
+            { headers: { Authorization: localStorage.token } }
+        )
+            .then(res => {
+                setPurchasing(false);
+                setPurchaseMessage('✓ Purchase successful!');
+                clearCart();
+                setTimeout(() => setPurchaseMessage(''), 3000);
+            })
+            .catch(err => {
+                setPurchasing(false);
+                setPurchaseMessage('Error processing purchase');
+                setTimeout(() => setPurchaseMessage(''), 3000);
                 console.log(err);
             });
     };
@@ -143,9 +153,9 @@ export const ShoppingCart = () =>
     return (
         <div className="shopping-cart-container">
             <h1>Shopping Cart</h1>
-            
+
             {error && <div className="error-message">{error}</div>}
-            
+
             {cart.items.length === 0 ? (
                 <div className="empty-cart">
                     <p>Your cart is empty</p>
@@ -164,8 +174,8 @@ export const ShoppingCart = () =>
                                 onRemove={removeItem}
                             />
                         ))}
-                        
-                        <button 
+
+                        <button
                             onClick={clearCart}
                             className="clear-cart-btn"
                             disabled={updating}
@@ -173,12 +183,15 @@ export const ShoppingCart = () =>
                             Clear Cart
                         </button>
                     </div>
-                    
+
                     <CartSummary
                         subtotal={cart.subtotal}
                         tax={cart.tax}
                         total={cart.total}
                         itemCount={cart.items.reduce((sum, item) => sum + item.quantity, 0)}
+                        onPurchase={handlePurchase}
+                        purchasing={purchasing}
+                        purchaseMessage={purchaseMessage}
                     />
                 </div>
             )}
