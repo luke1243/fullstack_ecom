@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const createError = require('http-errors');
 const productsModel = require('../models/Product');
+const { verifyToken, isAdmin } = require('../middleware/auth');
 
 router.get('/products/photo/:filename', (req, res, next) => {
     const path = require('path');
@@ -14,7 +15,7 @@ router.get('/products/photo/:filename', (req, res, next) => {
 
 router.get('/products', (req, res, next) => {
     const { search, category, sort } = req.query;
-    
+
     let query = {};
 
     // Search by name or description
@@ -43,6 +44,37 @@ router.get('/products', (req, res, next) => {
             res.json(products);
         })
         .catch(err => next(createError(500, 'Error fetching products')));
+});
+
+// Admin Routes
+// Update product
+router.put('/products/:id', verifyToken, isAdmin, (req, res, next) => {
+    const { name, description, price, stock } = req.body;
+
+    productsModel.findByIdAndUpdate(
+        req.params.id,
+        { name, description, price, stock, updatedAt: Date.now() },
+        { new: true, runValidators: true }
+    )
+        .then(product => {
+            if (!product) {
+                return next(createError(404, 'Product not found'));
+            }
+            res.json(product);
+        })
+        .catch(err => next(createError(500, err.message || 'Error updating product')));
+});
+
+// Delete product
+router.delete('/products/:id', verifyToken, isAdmin, (req, res, next) => {
+    productsModel.findByIdAndDelete(req.params.id)
+        .then(product => {
+            if (!product) {
+                return next(createError(404, 'Product not found'));
+            }
+            res.json({ message: 'Product deleted successfully' });
+        })
+        .catch(err => next(createError(500, 'Error deleting product')));
 });
 
 module.exports = router;

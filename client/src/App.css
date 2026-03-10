@@ -254,6 +254,10 @@ body {
   border-collapse: collapse;
 }
 
+.products-table tbody tr:nth-child(even) {
+  background-color: #f7f7f7;
+}
+
 .products-table th {
   text-align: left;
   padding: 12px;
@@ -273,7 +277,7 @@ body {
 }
 
 .products-table tbody tr:hover {
-  background-color: #f5f6fa;
+  background-color: #eef2ff;
 }
 
 .product-image-cell {
@@ -299,6 +303,10 @@ body {
   border-radius: 5px;
 }
 
+.product-row {
+  border-bottom: 1px solid #ecf0f1;
+}
+
 .product-name {
   font-weight: 500;
   color: #2c3e50;
@@ -322,6 +330,7 @@ body {
   border-radius: 3px;
   font-size: 0.8rem;
   display: inline-block;
+  margin-top: 18px;
 }
 
 .product-stock {
@@ -1021,15 +1030,10 @@ body {
 .form-group input {
   width: 100%;
   padding: 12px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #f1f1f1;
+  background-color: #f8f8f8;
   border-radius: 5px;
   font-size: 1rem;
-  transition: border-color 0.2s;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #3498db;
 }
 
 .form-group input.error {
@@ -1340,4 +1344,80 @@ body {
   .profile-layout {
     grid-template-columns: 1fr;
   }
+}
+
+
+/* Edit product */
+.product-edit-cell {
+  text-align: center;
+}
+
+.edit-btn {
+  padding: 6px 16px;
+  background: #ffc165;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.edit-btn:hover {
+  background: #ffae00;
+}
+
+/* Edit Product Modal */
+.edit-modal-body {
+  padding: 30px;
+}
+
+.edit-modal-title {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.edit-modal-message {
+  text-align: center;
+  padding: 10px;
+  margin-bottom: 15px;
+  color: #27ae60;
+  font-weight: 500;
+  background: #f0faf4;
+  border-radius: 5px;
+}
+
+.edit-modal-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #f1f1f1;
+  background-color: #f8f8f8;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.edit-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.edit-modal-delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.edit-modal-delete-btn:hover:not(:disabled) {
+  background-color: #c0392b;
+}
+
+.edit-modal-delete-btn:disabled,
+.btn-primary:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ProductTableRow } from './ProductTableRow';
 
-export const ProductTable = ({ products, onRowClick }) => {
+export const ProductTable = ({ products, onRowClick, isAdmin, onEditClick }) => {
     const [isTablet, setIsTablet] = useState(window.innerWidth >= 600 && window.innerWidth <= 768);
 
     useEffect(() => {
@@ -32,15 +32,18 @@ export const ProductTable = ({ products, onRowClick }) => {
                         )}
 
                         <th>Details</th>
+                        {isAdmin && <th>Admin</th>}
                     </tr>
                 </thead>
                 <tbody>
                     {products.map(product => (
-                        <ProductTableRow 
-                            key={product._id} 
-                            product={product} 
+                        <ProductTableRow
+                            key={product._id}
+                            product={product}
                             isTablet={isTablet}
                             onClick={() => onRowClick(product)}
+                            isAdmin={isAdmin}
+                            onEditClick={() => onEditClick(product)}
                         />
                     ))}
                 </tbody>

@@ -1,13 +1,13 @@
 import { SERVER_HOST } from '../../config/global_constants';
 import React from 'react';
 
-export const ProductTableRow = ({ product, isTablet, onClick }) => {
+export const ProductTableRow = ({ product, isTablet, onClick, isAdmin, onEditClick }) => {
     return (
         <tr onClick={onClick} className="product-row" style={{ cursor: 'pointer' }}>
             <td className="product-image-cell">
                 {product.photos && product.photos.length > 0 ? (
-                    <img 
-                        src={`${SERVER_HOST}/products/photo/${product.photos[0].filename}`} 
+                    <img
+                        src={`${SERVER_HOST}/products/photo/${product.photos[0].filename}`}
                         alt={product.name}
                         className="product-thumbnail"
                         onError={(e) => {
@@ -40,6 +40,17 @@ export const ProductTableRow = ({ product, isTablet, onClick }) => {
             <td className="product-view">
                 <span className="view-details">View →</span>
             </td>
+
+            {isAdmin && (
+                <td className="product-edit-cell">
+                    <button
+                        className="edit-btn"
+                        onClick={(e) => { e.stopPropagation(); onEditClick(); }}
+                    >
+                        Edit
+                    </button>
+                </td>
+            )}
         </tr>
     );
 };
