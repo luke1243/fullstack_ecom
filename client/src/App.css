@@ -769,13 +769,8 @@ body {
   font-size: 0.9rem;
 }
 
-.update-btn:hover:not(:disabled) {
+.update-btn:hover {
   background: #2980b9;
-}
-
-.update-btn:disabled {
-  background: #bdc3c7;
-  cursor: not-allowed;
 }
 
 .remove-btn {
@@ -812,13 +807,8 @@ body {
   font-size: 1rem;
 }
 
-.clear-cart-btn:hover:not(:disabled) {
+.clear-cart-btn:hover {
   background: #c0392b;
-}
-
-.clear-cart-btn:disabled {
-  background: #bdc3c7;
-  cursor: not-allowed;
 }
 
 .cart-summary {
@@ -1147,12 +1137,10 @@ body {
   background-color: #34495e;
 }
 
-/* Purchase History Styles */
 .page-title {
   text-align: center;
   margin-bottom: 30px;
   color: #ffffff;
-  /* Adjusted for dark background */
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
@@ -1170,30 +1158,19 @@ body {
   color: #666;
 }
 
-.status-badge {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
+.level {
+  padding: 6px 16px;
+  background: #32913e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.2s;
 }
 
-.status-badge.delivered {
-  background-color: #d4edda;
-  color: #155724;
-}
+/* Profile */
 
-.status-badge.processing {
-  background-color: #fff3cd;
-  color: #856404;
-}
-
-.status-badge.cancelled {
-  background-color: #f8d7da;
-  color: #721c24;
-}
-
-/* Profile Styles */
 .profile-layout {
   display: grid;
   grid-template-columns: 350px 1fr;
@@ -1412,12 +1389,6 @@ body {
   color: white;
 }
 
-.edit-modal-delete-btn:hover:not(:disabled) {
+.edit-modal-delete-btn:hover {
   background-color: #c0392b;
-}
-
-.edit-modal-delete-btn:disabled,
-.btn-primary:disabled {
-  background-color: #95a5a6;
-  cursor: not-allowed;
 }

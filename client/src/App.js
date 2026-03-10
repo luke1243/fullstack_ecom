@@ -13,6 +13,7 @@ import { Logout } from './components/auth/Logout';
 import { DisplayAllProducts } from './components/products/DisplayAllProducts';
 import { Profile } from './components/auth/Profile';
 import { PurchaseHistory } from './components/products/PurchaseHistory';
+import { DisplayAllUsers } from './components/auth/DisplayAllUsers';
 
 import { LoggedInRoute } from './components/routing/LoggedInRoute';
 
@@ -39,6 +40,8 @@ function App() {
                     <Route path="/profile" element={<LoggedInRoute><Profile /></LoggedInRoute>} />
 
                     <Route path="/purchase-history" element={<LoggedInRoute><PurchaseHistory /></LoggedInRoute>} />
+
+                    <Route path="/users" element={<LoggedInRoute><DisplayAllUsers /></LoggedInRoute>} />
 
                     <Route path="/logout" element={<LoggedInRoute><Logout /></LoggedInRoute>} />
 

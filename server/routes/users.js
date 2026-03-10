@@ -163,7 +163,7 @@ router.post('/users/logout', (req, res, next) => {
     res.json({ message: 'Logged out successfully' });
 });
 
-// Purchase: save product ObjectIds to the user's purchases array and clear the cart
+// Purchase
 router.post('/users/purchase', verifyToken, (req, res, next) => {
     if (!req.userId) {
         return next(createError(401, 'Please log in to make a purchase'));
@@ -201,7 +201,7 @@ router.post('/users/purchase', verifyToken, (req, res, next) => {
         });
 });
 
-// Get the authenticated user's purchased products
+// Get users purchased products
 router.get('/users/purchases', verifyToken, (req, res, next) => {
     if (!req.userId) {
         return next(createError(401, 'Please log in to view purchases'));
@@ -275,7 +275,6 @@ router.post('/users/profile/photo', verifyToken, upload.single('profilePhoto'), 
         });
 });
 
-// Serve profile photo
 router.get('/users/profile/photo/:filename', (req, res, next) => {
     const filePath = path.join(__dirname, '..', 'uploads', req.params.filename);
     res.sendFile(filePath, (err) => {
@@ -283,6 +282,69 @@ router.get('/users/profile/photo/:filename', (req, res, next) => {
             next(createError(404, 'Image not found'));
         }
     });
+});
+
+// Get all users
+router.get('/users/all', verifyToken, (req, res, next) => {
+    if (!req.userId) {
+        return next(createError(401, 'Please log in'));
+    }
+
+    usersModel.findById(req.userId)
+        .then(requestingUser => {
+            if (!requestingUser || requestingUser.accessLevel < parseInt(process.env.ACCESS_LEVEL_ADMIN)) {
+                return next(createError(403, 'Administrator access required'));
+            }
+
+            const { search, level, sort } = req.query;
+
+            let query = {};
+
+            if (search) {
+                query.name = { $regex: search, $options: 'i' };
+            }
+
+            if (level) {
+                query.accessLevel = parseInt(level);
+            }
+
+            let sortOption = {};
+            if (sort === 'name_asc') sortOption.name = 1;
+            else if (sort === 'name_desc') sortOption.name = -1;
+
+            usersModel.find(query)
+                .select('name email accessLevel profilePhotoFilename')
+                .sort(sortOption)
+                .then(users => {
+                    res.json(users);
+                })
+                .catch(err => next(createError(500, 'Error fetching users')));
+        })
+        .catch(err => next(createError(500, 'Error verifying admin')));
+});
+
+// Delete user
+router.delete('/users/:id', verifyToken, (req, res, next) => {
+    if (!req.userId) {
+        return next(createError(401, 'Please log in'));
+    }
+
+    usersModel.findById(req.userId)
+        .then(requestingUser => {
+            if (!requestingUser || requestingUser.accessLevel < parseInt(process.env.ACCESS_LEVEL_ADMIN)) {
+                return next(createError(403, 'Administrator access required'));
+            }
+
+            usersModel.findByIdAndDelete(req.params.id)
+                .then(user => {
+                    if (!user) {
+                        return next(createError(404, 'User not found'));
+                    }
+                    res.json({ message: 'User deleted successfully' });
+                })
+                .catch(err => next(createError(500, 'Error deleting user')));
+        })
+        .catch(err => next(createError(500, 'Error verifying admin')));
 });
 
 module.exports = router;

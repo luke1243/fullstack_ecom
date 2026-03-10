@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ACCESS_LEVEL_GUEST } from '../../config/global_constants';
+import { ACCESS_LEVEL_GUEST, ACCESS_LEVEL_ADMIN } from '../../config/global_constants';
 
 export const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -84,9 +84,11 @@ export const Header = () => {
                         </>
                     ) : (
                         <>
-                            <Link to="/profile" className="nav-link" onClick={closeMenu}>Profile</Link>
+                            {parseInt(localStorage.getItem('accessLevel')) === ACCESS_LEVEL_ADMIN && (
+                                <Link to="/users" className="nav-link" onClick={closeMenu}>Users</Link>
+                            )}
                             <Link to="/purchase-history" className="nav-link" onClick={closeMenu}>History</Link>
-                            <span className="welcome-message">Welcome, {userName}</span>
+                            <Link to="/profile" className="nav-link" onClick={closeMenu}>Profile</Link>
                             <button onClick={handleLogout} className="nav-link logout-btn">Logout</button>
                         </>
                     )}
