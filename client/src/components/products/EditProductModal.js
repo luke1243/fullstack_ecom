@@ -7,8 +7,8 @@ export const EditProductModal = ({ product, onClose, onProductUpdated, onProduct
     const [description, setDescription] = useState(product.description);
     const [price, setPrice] = useState(product.price);
     const [stock, setStock] = useState(product.stock);
-    const [setSaving] = useState(false);
-    const [setDeleting] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const [deleting, setDeleting] = useState(false);
     const [message, setMessage] = useState('');
 
     const handleOverlayClick = (e) => {
